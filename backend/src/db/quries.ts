@@ -62,6 +62,14 @@ export const updateProduct =async(id:string , data : Partial<NewUser>)=>{
   return product
 }
 
+export const deleteProduct = async(id : string)=>{
+    const existingProduct = getProductById(id)
+    if (!existingProduct) {
+        throw new Error("Product Not Found")
+    }
+
+    return await db.delete(products).where(eq(products.id , id)) 
+}
 export const createComment = async(data : NewComment)=>{
     const [comment]  =await db.insert(comments).values(data).returning()
     return comment
