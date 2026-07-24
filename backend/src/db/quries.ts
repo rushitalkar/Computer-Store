@@ -58,7 +58,7 @@ export const getProductByUserId = async(userId : string)=>{
 
 }
 
-export const updateProduct =async(id:string , data : Partial<NewUser>)=>{
+export const updateProduct =async(id:string , data : Partial<NewProduct>)=>{
   const [product]=  await db.update(products).set(data).where(eq(products.id , id)).returning()
   return product
 }

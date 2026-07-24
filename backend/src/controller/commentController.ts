@@ -2,13 +2,15 @@ import { Request,Response } from "express";
 import { getAuth } from "@clerk/express";
 import * as queries from "../db/quries"
 
+
+
 export const createComment = async(req : Request , res : Response )=>{
     try {
         const {userId} = getAuth(req)
         if (!userId) return res.status(401).json({error : "unauthorized"})
 
-        const {productId} = req.params
-
+        const {productId} =  req.params
+        
         const {content} = req.body
 
         if (!content) return res.status(400).json({error : "Missing Comment Content"})
@@ -26,6 +28,7 @@ export const createComment = async(req : Request , res : Response )=>{
         
     }
 }
+
 
 export const deleteComment = async(req : Request , res : Response )=>{
     try{
