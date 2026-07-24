@@ -1,6 +1,5 @@
 import { db } from ".";
 import { eq } from "drizzle-orm";
-import createdAt from "./schema";
 import { users , products , comments , type NewComment , type NewProduct , type NewUser } from "./schema";
 
 export const createUser = async (data : NewUser) => {
@@ -24,12 +23,14 @@ export const upsertUser = async(data : NewUser)=>{
     return createUser(data)
 }
 
-export const createProduct = async (data : NewProduct) => {
+export const createProduct = async (data : NewProduct)  => {
    const [product] = await db.insert(products).values(data).returning();
    return product
 }
 
-export const getAllProduct = async()=>{
+
+
+export const getAllProducts = async()=>{
     return await db.query.products.findMany({
         with :{user : true},
         orderBy : (products , {desc})=>[desc(products.created_at)]
@@ -70,6 +71,7 @@ export const deleteProduct = async(id : string)=>{
 
     return await db.delete(products).where(eq(products.id , id)) 
 }
+
 export const createComment = async(data : NewComment)=>{
     const [comment]  =await db.insert(comments).values(data).returning()
     return comment

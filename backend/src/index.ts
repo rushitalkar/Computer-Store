@@ -2,7 +2,9 @@ import express, { urlencoded } from "express"
 import dotenv from "dotenv"
 import { clerkMiddleware } from '@clerk/express'
 import cors from "cors"
-
+import userRoutes from "./routes/userRoutes"
+import productRoutes from "./routes/productRoutes"
+import commentRoutes from "./routes/commentRoutes"
 const app = express()
 
 app.use(clerkMiddleware())
@@ -21,5 +23,9 @@ app.get("/", (req,res)=>{
     },
   })
 })
+
+app.use("/api/users",userRoutes)
+app.use("/api/products",productRoutes)
+app.use("/api/comments",commentRoutes)
 
 app.listen(process.env.PORT,()=> console.log("Server is Running"));
