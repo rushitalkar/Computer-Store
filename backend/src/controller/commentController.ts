@@ -2,14 +2,17 @@ import { Request,Response } from "express";
 import { getAuth } from "@clerk/express";
 import * as queries from "../db/quries"
 
-
+const getParamValue = (value: string | string[] | undefined) => {
+    return Array.isArray(value) ? value[0] : value;
+};
 
 export const createComment = async(req : Request , res : Response )=>{
     try {
         const {userId} = getAuth(req)
         if (!userId) return res.status(401).json({error : "unauthorized"})
 
-        const {productId} =  req.params
+        const productId = getParamValue(req.params.productId)
+        if (!productId) return res.status(400).json({error : "Missing product id"})
         
         const {content} = req.body
 
@@ -33,7 +36,8 @@ export const createComment = async(req : Request , res : Response )=>{
 export const deleteComment = async(req : Request , res : Response )=>{
     try{
         const {userId} = getAuth(req)
-        const {commentId} = req.params
+        const commentId = getParamValue(req.params.commentId)
+        if (!commentId) return res.status(400).json({error : "Missing comment id"})
 
         const existingComment = await queries.getCommentById(commentId)
 

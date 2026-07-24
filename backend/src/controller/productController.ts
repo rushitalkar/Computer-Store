@@ -2,7 +2,9 @@ import { Request , Response } from "express";
 import { getAuth, UnauthorizedError } from "@clerk/express";
 import * as queries from "../db/quries"
 
-
+const getParamValue = (value: string | string[] | undefined) => {
+    return Array.isArray(value) ? value[0] : value;
+};
 
 export const getAllProducts = async(req : Request , res : Response )=>{
     try {
@@ -17,7 +19,7 @@ export const getAllProducts = async(req : Request , res : Response )=>{
 
 export const getProductById = async(req : Request , res : Response )=>{
     try {
-        const {id} = req.params
+        const id = getParamValue(req.params.id)
         if (!id) return res.status(400).json({error : "Missing product id"})
 
         const product = await queries.getProductById(id)
@@ -81,7 +83,8 @@ export const updateProduct = async (req: Request, res: Response) => {
     const { userId } = getAuth(req);
     if (!userId) return res.status(401).json({ error: "Unauthorized" });
 
-    const {id} = req.params
+    const id = getParamValue(req.params.id)
+    if (!id) return res.status(400).json({ error: "Missing product id" });
 
     const { title, description, imageUrl } = req.body;
 
@@ -116,7 +119,8 @@ export const deleteProduct = async (req : Request , res : Response )=>{
         const { userId } = getAuth(req);
     if (!userId) return res.status(401).json({ error: "Unauthorized" });
 
-    const {id} = req.params
+    const id = getParamValue(req.params.id)
+    if (!id) return res.status(400).json({ error: "Missing product id" });
 
     // Check if product exists and belongs to user
     const existingProduct = await queries.getProductById(id);

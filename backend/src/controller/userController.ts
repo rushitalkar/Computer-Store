@@ -9,7 +9,7 @@ export const syncUser = async(req : Request , res : Response)=>{
         const {email, name , imageUrl} = req.body
 
         if (!email || !name || !imageUrl) {
-            return res.status(401).json({error : "Email Name and Image Url Require"})
+            return res.status(400).json({error : "Email Name and Image Url Require"})
         }
         
 
@@ -20,7 +20,7 @@ export const syncUser = async(req : Request , res : Response)=>{
             imageUrl
         })
 
-    res.status(400).json(user)
+    res.status(200).json(user)
     } catch (error) {
         console.error("Error Syncking User",error);
         res.status(500).json({error : "Error Syncing User "})

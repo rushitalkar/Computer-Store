@@ -34,10 +34,8 @@ export const comments = pgTable("comments", {
        id : uuid("id").defaultRandom().primaryKey(),
        content : text("content").notNull(),
        userId : text("user_id").notNull().references(()=> users.id , {onDelete : "cascade"}),
-       productId : uuid("user_id").notNull().references(()=> products.id , {onDelete : "cascade"}),
+       productId : uuid("product_id").notNull().references(()=> products.id , {onDelete : "cascade"}),
        created_at: timestamp("created_at", { mode: "date" }).notNull().defaultNow(),
-
-
 })
 
 
@@ -51,6 +49,13 @@ export const productRelation =  relations(products , ({one,many})=>({
      user : one(users ,{fields :[products.userId], references : [users.id]}),
 
 }))
+
+
+export const commentsRelations = relations(comments, ({ one }) => ({
+  user: one(users, { fields: [comments.userId], references: [users.id] }), // One comment → one user
+  product: one(products, { fields: [comments.productId], references: [products.id] }), // One comment → one product
+}));
+
 
 export type User = typeof users.$inferSelect;
 export type NewUser = typeof users.$inferInsert;
