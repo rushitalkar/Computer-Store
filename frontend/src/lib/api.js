@@ -28,7 +28,7 @@ export const getMyProduct = async()=>{
 }
 
 export const createProduct = async(productData)=>{
-    const {data} = await api.post("/product",productData)
+    const {data} = await api.post("/products",productData)
     return data
 }
 

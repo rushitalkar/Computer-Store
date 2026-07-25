@@ -1,9 +1,99 @@
 import React from 'react'
-
+import { useProducts } from '../hooks/useProducts'
+import { BarLoader } from "react-spinners";
+import { useEffect } from 'react';
+import { SignInButton } from '@clerk/react';
+import { PackageIcon, SparklesIcon } from "lucide-react";
+import { useAuth } from '@clerk/react';
+import toast, { Toaster } from 'react-hot-toast';
+import { Link } from "react-router-dom"
+import ProductCard from '../Components/ProductCard';
 const HomePage = () => {
+  const {isSignedIn} = useAuth()
+  const{data : products, isLoading , error} = useProducts()
+  useEffect(() => {
+      console.log(isLoading);
+      console.log(products);
+      
+  }, [isLoading])
+  
+  if (isLoading) {
+    return <BarLoader width={"100%"} color="#36d7b7"/>
+  }
+
+  if (error) {
+    return <div role='alert' className='alert alert-error'>
+      <span>Something Went Wrong Please Refesh Page</span>
+   </div>
+  }
+
   return (
-    <div>
-      <h1>HomePage</h1>
+    <div className='spacey-y-10'>
+      <Toaster
+  position="top-center"
+  reverseOrder={false}
+/>
+      <div className="hero bg-linear-to-br from-base-300 via-base-200 to-base-300 rounded-box overflow-hidden">
+        <div className="hero-content flex-col lg:flex-row-reverse gap-10 py-10">
+          <div className="relative">
+            <div className="absolute inset-0 bg-primary/20 blur-3xl rounded-full scale-110" />
+            <img
+              src="/image.png"
+              alt="Creator"
+              className="relative h-64 lg:h-72 rounded-2xl shadow-2xl"
+            />
+          </div>
+          <div className="text-center lg:text-left">
+            <h1 className="text-4xl lg:text-5xl font-bold leading-tight">
+              Share Your <span className="text-primary">Products</span>
+            </h1>
+            <p className="py-4 text-base-content/60">
+              Upload, discover, and connect with creators.
+            </p>
+
+           {
+            isSignedIn ?  <button onClick={()=>toast.success("You Already SignIn")} className="btn btn-primary">
+                <SparklesIcon className="size-4" />
+                Start Selling
+              </button> :  <SignInButton mode="modal">
+              <button className="btn btn-primary">
+                <SparklesIcon className="size-4" />
+                Start Selling
+              </button>
+            </SignInButton>
+           }
+           
+          </div>
+        </div>
+      </div>
+      <div className='mt-6'>
+        <h2 className='text-xl font-bold flex items-center gap-2 mb-6'>
+          <PackageIcon className="size-5  text-primary"/>
+          All Products
+        </h2>
+        {
+          products.length === 0 ? (
+             <div className='card bg-base-300 '>
+               <div className='card-body items-center text-center py-16'>
+                <PackageIcon className='size-16 text-base-content/20'/>
+                <h3 className="card-title text-base-content/50">No Products Yet</h3>
+                <p>Be The First Member To Share Products</p>
+                <Link to={"/create"} className="btn btn-primary btn-sm mt-2 text-sm p-4">
+                     Craete Product
+                </Link>
+               </div>
+             </div>
+          ) : (
+               <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4'>
+                  {
+                    products.map((product)=>{
+                    return   <ProductCard  key={product.id} product={product}/>
+                    })
+                  }
+               </div>
+          )
+        }
+      </div>
     </div>
   )
 }
