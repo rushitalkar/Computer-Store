@@ -64,12 +64,13 @@ export const updateProduct =async(id:string , data : Partial<NewProduct>)=>{
 }
 
 export const deleteProduct = async(id : string)=>{
-    const existingProduct = getProductById(id)
+    const existingProduct =await getProductById(id)
     if (!existingProduct) {
         throw new Error("Product Not Found")
     }
 
-    return await db.delete(products).where(eq(products.id , id)) 
+    const [product] = await db.delete(products).where(eq(products.id , id)).returning()
+    return product
 }
 
 export const createComment = async(data : NewComment)=>{
@@ -77,11 +78,15 @@ export const createComment = async(data : NewComment)=>{
     return comment
 }
 
-export const deleteComment = async(id : string)=>{
-    const [comment] = await db.delete(comments).where(eq(comments.id , id)).returning()
-    return comment
+export const deleteComment = async (id: string) => {
+  const existingComment = await getCommentById(id);
+  if (!existingComment) {
+    throw new Error(`Comment with id ${id} not found`);
+  }
 
-}
+  const [comment] = await db.delete(comments).where(eq(comments.id, id)).returning();
+  return comment;
+};
 
 export const getCommentById = async(id : string)=>{
     return await db.query.comments.findFirst({

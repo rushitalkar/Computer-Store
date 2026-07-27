@@ -8,9 +8,11 @@ import { useAuth } from '@clerk/react';
 import toast, { Toaster } from 'react-hot-toast';
 import { Link } from "react-router-dom"
 import ProductCard from '../Components/ProductCard';
+import { useNavigate } from 'react-router-dom';
 const HomePage = () => {
   const {isSignedIn} = useAuth()
   const{data : products, isLoading , error} = useProducts()
+  const navigate = useNavigate()
   useEffect(() => {
       console.log(isLoading);
       console.log(products);
@@ -62,6 +64,10 @@ const HomePage = () => {
               </button>
             </SignInButton>
            }
+            <button onClick={()=>navigate("/products")} className="btn btn-primary ml-4">
+                <SparklesIcon className="size-4" />
+                Explore Products
+              </button>
            
           </div>
         </div>
@@ -86,7 +92,7 @@ const HomePage = () => {
           ) : (
                <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4'>
                   {
-                    products.map((product)=>{
+                    products.slice(1,4).map((product)=>{
                     return   <ProductCard  key={product.id} product={product}/>
                     })
                   }

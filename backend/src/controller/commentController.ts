@@ -43,9 +43,10 @@ export const deleteComment = async(req : Request , res : Response )=>{
 
         if (!existingComment) return res.status(404).json({error : "Comment Not Found"})
 
-        if(existingComment.userId !== userId) res.status(500).json({error : "You Can Delete Your Own Comment"})
+        if(existingComment.userId !== userId) return res.status(403).json({error : "You Can Delete Your Own Comment"})
 
         await queries.deleteComment(commentId)
+        return res.status(200).json({message: "Comment deleted"})
     }catch(error){
           res.status(500).json({error : "Error Deleting Comment"})
         console.error("Delete Commeent error");

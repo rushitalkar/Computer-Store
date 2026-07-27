@@ -116,7 +116,7 @@ export const updateProduct = async (req: Request, res: Response) => {
 
 export const deleteProduct = async (req : Request , res : Response )=>{
     try {
-        const { userId } = getAuth(req);
+    const { userId } = getAuth(req);
     if (!userId) return res.status(401).json({ error: "Unauthorized" });
 
     const id = getParamValue(req.params.id)

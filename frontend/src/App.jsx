@@ -11,6 +11,7 @@ import EditProductPage from './Pages/EditProductPage'
 import useAuthRequest from './hooks/useAuthRequest'
 import useUserSync from './hooks/useUserSync'
 import { useNavigate } from 'react-router-dom'
+import AllProductsPage from './Pages/AllProductsPage'
 
 function App() {
   const navigate = useNavigate()
@@ -25,10 +26,12 @@ function App() {
     <main className="max-w-5xl mx-auto  px-4 py-8">
       <Routes>
         <Route path="/" element={<HomePage/>}/>
-        <Route path="/product/:id" element={<ProductPage/>}/>
+        <Route path="/product/:id" element={isSignedIn ? <ProductPage/> : navigate("/")}/>
         <Route path="/profile" element={ isSignedIn ? <ProfilePage/> : navigate("/")}/>
         <Route path="/create" element={isSignedIn ? <CreatePage/> : navigate("/")}/>
         <Route path="/edit/:id" element={isSignedIn ? <EditProductPage/> : navigate("/")}/>
+        <Route path="/products" element={<AllProductsPage/>}/>
+
       </Routes>
     </main>
     </div>

@@ -21,8 +21,10 @@ export const getproductById =async (id)=>{
     const { data } = await api.get(`/products/${id}`)
     return data
 }
-
-export const getMyProduct = async()=>{
+//The frontend does not supply userId directly.
+//The backend extracts it from the authenticated request using Clerk.
+//So GET /products/my returns only the current logged-in user’s products.
+export const getMyProducts = async()=>{
     const {data} = await api.get("/products/my")
     return data
 }
@@ -38,8 +40,15 @@ export const updateProduct = async(id,...productData)=>{
 }
 
 export const deleteProduct = async(id)=>{
-    const {data} = await api.delete(`/products/${id}`)
-    return data
+    try {
+        
+        const {data} = await api.delete(`/products/${id}`)
+        return data
+    } catch (error) {
+        console.log(error);
+        
+    }
+    
 }
 
 export const createComment = async({productId , content})=>{
@@ -51,3 +60,4 @@ export const deleteComment =async({commentId})=>{
     const {data} = await api.delete(`/comments/${commentId}`)
     return data
 }
+
