@@ -34,20 +34,12 @@ export const createProduct = async(productData)=>{
     return data
 }
 
-export const updateProduct = async(idOrPayload, productData = {})=>{
-    let id = idOrPayload;
-    let payload = productData;
 
-    if (typeof idOrPayload === "object" && idOrPayload !== null && "id" in idOrPayload) {
-        id = idOrPayload.id;
-        payload = Object.fromEntries(
-            Object.entries(idOrPayload).filter(([key]) => key !== "id")
-        );
-    }
 
-    const { data } = await api.put(`/products/${id}`, payload)
-    return data
-}
+export const updateProduct = async ({ id, ...productData }) => {
+  const { data } = await api.put(`/products/${id}`, productData);
+  return data;
+};
 
 export const deleteProduct = async(id)=>{
     try {
